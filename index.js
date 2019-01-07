@@ -8,8 +8,6 @@ import {
   Platform
 } from 'react-native'
 import ImagePicker from 'react-native-image-picker'
-import ImageResizer from 'react-native-image-resizer'
-import RNFS from 'react-native-fs'
 
 export default class PhotoUpload extends React.Component {
   static propTypes = {
@@ -55,9 +53,9 @@ export default class PhotoUpload extends React.Component {
     ImagePicker.showImagePicker(this.options, async response => {
       this.setState({buttonDisabled: false})
 
-      let rotation = 0 
+      let rotation = 0
       const {originalRotation} = response
-      
+
 
       if (this.props.onResponse) this.props.onResponse(response)
 
@@ -76,36 +74,19 @@ export default class PhotoUpload extends React.Component {
       }
 
       let { maxHeight, maxWidth, quality, format } = this.state
-      
+
       //Determining rotation param
-      if ( originalRotation === 90) { 
-        rotation = 90 
-      } else if (originalRotation === 180) { 
-        //For a few images rotation is 180. 
-        rotation = -180 
+      if ( originalRotation === 90) {
+        rotation = 90
+      } else if (originalRotation === 180) {
+        //For a few images rotation is 180.
+        rotation = -180
       } else if ( originalRotation === 270 )  {
         //When taking images with the front camera (selfie), the rotation is 270.
-        rotation = -90 
+        rotation = -90
       }
-      // resize image
-      const resizedImageUri = await ImageResizer.createResizedImage(
-        `data:image/jpeg;base64,${response.data}`,
-        maxHeight,
-        maxWidth,
-        format,
-        quality,
-        rotation
-      )
 
-      if (this.props.onResizedImageUri) this.props.onResizedImageUri(resizedImageUri)
-
-      const filePath = Platform.OS === 'android' && resizedImageUri.uri.replace
-        ? resizedImageUri.uri.replace('file:/data', '/data')
-        : resizedImageUri.uri
-
-      // convert image back to base64 string
-      const photoData = await RNFS.readFile(filePath, 'base64')
-      let source = { uri: resizedImageUri.uri }
+      let source = { uri: 'data:image/jpeg;base64,' + response.data }
       this.setState({
         avatarSource: source
       })
