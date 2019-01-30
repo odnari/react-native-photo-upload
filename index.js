@@ -92,7 +92,7 @@ export default class PhotoUpload extends React.Component {
       })
 
       // handle photo in props functions as data string
-      if (this.props.onPhotoSelect) this.props.onPhotoSelect(photoData)
+      if (this.props.onPhotoSelect) this.props.onPhotoSelect(response.data)
     })
   }
 
